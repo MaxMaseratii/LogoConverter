@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LogoShift - Convert Any Image to Vector</title>
+  <title>Logo Generator - Convert Image to Logo Package</title>
   <!-- JSZip Library for packaging downloads -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     :root {
       --bg-dark: #0f172a;
       --bg-card: #1e293b;
-      --primary: #4F46E5;
-      --secondary: #EC4899;
+      --primary: #3b82f6;
+      --secondary: #8b5cf6;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
     }
@@ -27,17 +27,14 @@
       min-height: 100vh;
     }
 
-    /* Navbar */
     nav {
       padding: 20px 40px;
       border-bottom: 1px solid #334155;
-      display: flex;
-      align-items: center;
+      font-weight: 800;
+      font-size: 24px;
+      letter-spacing: -1px;
     }
-    nav h2 { margin: 0; font-weight: 800; letter-spacing: -1px; display: flex; align-items: center; gap: 8px;}
-    .nav-icon { width: 24px; height: 24px; fill: url(#primaryGrad); }
 
-    /* Main Container */
     main {
       flex: 1;
       display: flex;
@@ -48,22 +45,21 @@
     }
 
     h1 {
-      font-size: 3rem;
-      margin-bottom: 15px;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    
+
     p.subtitle {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: var(--text-muted);
       max-width: 600px;
       margin-bottom: 40px;
-      line-height: 1.6;
     }
 
-    /* Upload Area */
+    /* STEP 1: Upload Box */
     .upload-box {
       background: var(--bg-card);
       border: 2px dashed #475569;
@@ -73,60 +69,50 @@
       padding: 60px 20px;
       cursor: pointer;
       transition: all 0.3s ease;
-      position: relative;
     }
-    
     .upload-box:hover {
       border-color: var(--primary);
       background: #1e293b80;
     }
+    input[type="file"] { display: none; }
 
-    .upload-icon {
-      width: 64px;
-      height: 64px;
-      margin-bottom: 20px;
-      opacity: 0.7;
-    }
-
-    /* Processing State */
-    #processing {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 40px;
-    }
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid #334155;
-      border-top-color: var(--primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-
-    /* Results Area */
-    #results {
+    /* STEP 2: Customization Box */
+    #step2 {
       display: none;
       background: var(--bg-card);
       border-radius: 16px;
       padding: 40px;
       max-width: 600px;
       width: 100%;
-      margin-top: 20px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
-
-    .preview-box {
-      background: var(--bg-dark);
+    
+    #imagePreview {
+      max-height: 150px;
+      max-width: 100%;
+      margin-bottom: 20px;
       border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 30px;
-      border: 1px solid #334155;
     }
 
-    button.download-btn {
+    input[type="text"] {
+      width: 100%;
+      max-width: 400px;
+      padding: 15px;
+      font-size: 18px;
+      border-radius: 8px;
+      border: 1px solid #475569;
+      background: var(--bg-dark);
+      color: white;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+    
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    button.action-btn {
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white;
       border: none;
@@ -137,88 +123,58 @@
       cursor: pointer;
       transition: opacity 0.2s, transform 0.1s;
       width: 100%;
+      max-width: 400px;
     }
-    button.download-btn:hover { opacity: 0.9; }
-    button.download-btn:active { transform: scale(0.98); }
+    button.action-btn:hover { opacity: 0.9; }
+    button.action-btn:active { transform: scale(0.98); }
 
-    input[type="file"] { display: none; }
+    #status { margin-top: 15px; color: #10B981; }
   </style>
 </head>
 <body>
 
-  <!-- SVG Gradients Definitions used in UI -->
-  <svg width="0" height="0" style="position:absolute">
-    <defs>
-      <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#4F46E5"/>
-        <stop offset="100%" stop-color="#EC4899"/>
-      </linearGradient>
-    </defs>
-  </svg>
-
-  <nav>
-    <h2>
-      <svg class="nav-icon" viewBox="0 0 120 120">
-        <path d="M 0 0 L 25 0 L 25 55 L 65 55 L 65 80 L 0 80 Z" fill="url(#primaryGrad)"/>
-        <path d="M 45 0 Q 45 20 65 20 Q 45 20 45 40 Q 45 20 25 20 Q 45 20 45 0 Z" fill="#EC4899"/>
-      </svg>
-      LogoShift
-    </h2>
-  </nav>
+  <nav>Logo Maker Pro</nav>
 
   <main>
-    <h1>Convert Any Image to Vector</h1>
-    <p class="subtitle">Upload your raster image (JPG, PNG) and instantly generate a complete, responsive, infinitely scalable vector logo package.</p>
+    <div id="step1">
+      <h1>Turn Your Image into a Logo</h1>
+      <p class="subtitle">Upload your graphic. We'll add your brand name and package it into scalable SVG files instantly.</p>
 
-    <!-- Upload Interface -->
-    <div class="upload-box" id="uploadZone">
-      <svg class="upload-icon" fill="none" stroke="#94a3b8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-      <h3 style="margin-bottom: 10px;">Drag & Drop your image here</h3>
-      <p style="color: var(--text-muted); font-size: 14px;">or click to browse from your computer</p>
-      <input type="file" id="fileInput" accept="image/png, image/jpeg, image/jpg">
-    </div>
-
-    <!-- Processing Animation -->
-    <div id="processing">
-      <div class="spinner"></div>
-      <h3 id="loadingText">Analyzing image paths...</h3>
-    </div>
-
-    <!-- Results Interface -->
-    <div id="results">
-      <h2 style="margin-top: 0;">Conversion Complete!</h2>
-      <p style="color: var(--text-muted);">Your image was successfully converted into a 5-part scalable vector suite.</p>
-      
-      <div class="preview-box">
-        <!-- Live preview of the generated SVG -->
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 150" width="100%" height="150">
-          <g transform="translate(100, -10)">
-            <path d="M 0 0 L 25 0 L 25 55 L 65 55 L 65 80 L 0 80 Z" fill="url(#primaryGrad)"/>
-            <path d="M 45 0 Q 45 20 65 20 Q 45 20 45 40 Q 45 20 25 20 Q 45 20 45 0 Z" fill="#EC4899"/>
-            <text x="100" y="55" font-family="system-ui" font-size="42" font-weight="800" fill="#f8fafc" letter-spacing="-1">LogoShift</text>
-            <text x="100" y="80" font-family="system-ui" font-size="12" font-weight="600" fill="#94a3b8" letter-spacing="2">VECTORIZED READY</text>
-          </g>
-        </svg>
+      <div class="upload-box" id="uploadZone">
+        <h3 style="margin-bottom: 10px;">Drag & Drop your image here</h3>
+        <p style="color: var(--text-muted); font-size: 14px;">or click to upload from your device (JPG, PNG)</p>
+        <input type="file" id="fileInput" accept="image/png, image/jpeg, image/jpg">
       </div>
+    </div>
 
-      <button class="download-btn" id="downloadBtn">Download .ZIP Package</button>
-      <div id="status" style="margin-top: 15px; font-size: 14px; color: #10B981; min-height: 20px;"></div>
+    <div id="step2">
+      <h2>Customize Your Package</h2>
+      <img id="imagePreview" src="" alt="Uploaded Logo Mark">
+      
+      <h3>What is your Brand Name?</h3>
+      <input type="text" id="brandName" placeholder="e.g. Acme Corp" required>
+      <br>
+      <button class="action-btn" id="generateBtn">Generate & Download .ZIP</button>
+      <div id="status"></div>
     </div>
   </main>
 
   <script>
     const uploadZone = document.getElementById('uploadZone');
     const fileInput = document.getElementById('fileInput');
-    const processing = document.getElementById('processing');
-    const results = document.getElementById('results');
-    const loadingText = document.getElementById('loadingText');
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const imagePreview = document.getElementById('imagePreview');
+    const brandNameInput = document.getElementById('brandName');
+    
+    let uploadedImageBase64 = "";
 
-    // Handle Drag & Drop / Clicks
+    // 1. Handle File Upload
     uploadZone.addEventListener('click', () => fileInput.click());
     
     uploadZone.addEventListener('dragover', (e) => {
       e.preventDefault();
-      uploadZone.style.borderColor = '#4F46E5';
+      uploadZone.style.borderColor = '#3b82f6';
     });
     
     uploadZone.addEventListener('dragleave', () => {
@@ -229,50 +185,72 @@
       e.preventDefault();
       uploadZone.style.borderColor = '#475569';
       if (e.dataTransfer.files.length > 0) {
-        startConversion();
+        processImage(e.dataTransfer.files[0]);
       }
     });
 
     fileInput.addEventListener('change', () => {
       if (fileInput.files.length > 0) {
-        startConversion();
+        processImage(fileInput.files[0]);
       }
     });
 
-    // Simulated Conversion Process for UI
-    function startConversion() {
-      uploadZone.style.display = 'none';
-      processing.style.display = 'flex';
-      
-      setTimeout(() => { loadingText.innerText = "Extracting color palettes..."; }, 1000);
-      setTimeout(() => { loadingText.innerText = "Generating scalable vector nodes..."; }, 2000);
-      setTimeout(() => {
-        processing.style.display = 'none';
-        results.style.display = 'block';
-      }, 3500);
+    // 2. Read Image and Convert to Base64
+    function processImage(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        uploadedImageBase64 = e.target.result;
+        imagePreview.src = uploadedImageBase64;
+        
+        // Hide Step 1, Show Step 2
+        step1.style.display = 'none';
+        step2.style.display = 'block';
+        brandNameInput.focus();
+      };
+      reader.readAsDataURL(file);
     }
 
-    // ZIP Download Logic
-    document.getElementById('downloadBtn').addEventListener('click', function() {
+    // 3. Generate SVGs and Download ZIP
+    document.getElementById('generateBtn').addEventListener('click', function() {
+      const brandName = brandNameInput.value.trim() || "MyBrand";
       const statusElement = document.getElementById('status');
-      statusElement.textContent = "Packaging files...";
+      statusElement.textContent = "Generating custom logo package...";
       
       const zip = new JSZip();
       
-      // Vector Data
-      const svgPrimary = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4F46E5"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><g transform="translate(167.5, 40)"><path d="M 0 0 L 25 0 L 25 55 L 65 55 L 65 80 L 0 80 Z" fill="url(#g)"/><path d="M 45 0 Q 45 20 65 20 Q 45 20 45 40 Q 45 20 25 20 Q 45 20 45 0 Z" fill="#EC4899"/></g><text x="200" y="180" font-family="system-ui" font-size="42" font-weight="800" fill="#111827" text-anchor="middle">LogoShift</text></svg>`;
-      const svgHorizontal = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 150"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4F46E5"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><g transform="translate(40, 35)"><path d="M 0 0 L 25 0 L 25 55 L 65 55 L 65 80 L 0 80 Z" fill="url(#g)"/><path d="M 45 0 Q 45 20 65 20 Q 45 20 45 40 Q 45 20 25 20 Q 45 20 45 0 Z" fill="#EC4899"/></g><text x="140" y="85" font-family="system-ui" font-size="46" font-weight="800" fill="#111827">LogoShift</text></svg>`;
-      const svgFavicon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4F46E5"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><g transform="translate(27.5, 20)"><path d="M 0 0 L 25 0 L 25 55 L 65 55 L 65 80 L 0 80 Z" fill="url(#g)"/><path d="M 45 0 Q 45 20 65 20 Q 45 20 45 40 Q 45 20 25 20 Q 45 20 45 0 Z" fill="#EC4899"/></g></svg>`;
+      // Asset 1: Primary Logo (Stacked - Image on top, Text on bottom)
+      const svgPrimary = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+          <image href="${uploadedImageBase64}" x="125" y="50" width="250" height="250" preserveAspectRatio="xMidYMid meet"/>
+          <text x="250" y="380" font-family="system-ui, sans-serif" font-size="52" font-weight="800" fill="#000000" text-anchor="middle">${brandName}</text>
+        </svg>
+      `;
 
-      zip.file("logoshift-primary.svg", svgPrimary);
-      zip.file("logoshift-horizontal.svg", svgHorizontal);
-      zip.file("logoshift-favicon.svg", svgFavicon);
-      zip.file("deployment-guide.txt", "LogoShift Vector Package\n\nHEX Codes:\nIndigo: #4F46E5\nPink: #EC4899\nDark: #111827\nFont: system-ui\n\nThese SVG files are infinitely scalable. You can open them in any vector editing software (Illustrator, Figma) or use them directly in web development.");
+      // Asset 2: Horizontal Logo (Image on left, Text on right)
+      const svgHorizontal = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200">
+          <image href="${uploadedImageBase64}" x="20" y="20" width="160" height="160" preserveAspectRatio="xMidYMid meet"/>
+          <text x="220" y="125" font-family="system-ui, sans-serif" font-size="64" font-weight="800" fill="#000000">${brandName}</text>
+        </svg>
+      `;
 
+      // Asset 3: Favicon / Social Profile (Just the uploaded image, scaled to a square)
+      const svgFavicon = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+          <image href="${uploadedImageBase64}" x="10" y="10" width="180" height="180" preserveAspectRatio="xMidYMid meet"/>
+        </svg>
+      `;
+
+      // Add generated SVGs to the ZIP
+      zip.file(brandName.replace(/\s+/g, '_') + "_Primary.svg", svgPrimary.trim());
+      zip.file(brandName.replace(/\s+/g, '_') + "_Horizontal.svg", svgHorizontal.trim());
+      zip.file(brandName.replace(/\s+/g, '_') + "_Icon.svg", svgFavicon.trim());
+
+      // Download the ZIP
       zip.generateAsync({ type: "blob" }).then(function(content) {
         const link = document.createElement('a');
         link.href = URL.createObjectURL(content);
-        link.download = "Converted_Vector_Package.zip";
+        link.download = brandName.replace(/\s+/g, '_') + "_LogoPackage.zip";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
