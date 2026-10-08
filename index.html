@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogoShift - Convert Image to Vector</title>
+  <!-- JSZip Library for client-side zip generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: #111827;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      text-align: center;
+      background: #1F2937;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      max-width: 500px;
+      width: 90%;
+    }
+    h1 { margin-top: 0; color: #F3F4F6; }
+    p { color: #9CA3AF; margin-bottom: 30px; }
+    button {
+      background: linear-gradient(135deg, #4F46E5, #EC4899);
+      color: white;
+      border: none;
+      padding: 16px 32px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      width: 100%;
+    }
+    button:hover { opacity: 0.9; }
+    button:active { transform: scale(0.98); }
+    #status { margin-top: 15px; font-size: 14px; color: #10B981; min-height: 20px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>LogoShift Conversion Complete</h1>
+    <p>Your image has been processed into 5 responsive vector layouts.</p>
+    
+    <button id="downloadBtn">DOWNLOAD FULL PACKAGE (.ZIP)</button>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    // The raw SVG data to be zipped
+    const svgPrimary = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4F46E5"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><g transform="translate(167.5, 40)"><path d="M 0 0 L 25 0 L 25 55 L 65 55 L 65 80 L 0 80 Z" fill="url(#g)"/><path d="M 45 0 Q 45 20 65 20 Q 45 20 45 40 Q 45 20 25 20 Q 45 20 45 0 Z" fill="#EC4899"/></g><text x="200" y="180" font-family="system-ui" font-size="42" font-weight="800" fill="#111827" text-anchor="middle">LogoShift</text></svg>`;
+    
+    const svgHorizontal = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 150"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4F46E5"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><g transform="translate(40, 35)"><path d="M 0 0 L 25 0 L 25 55 L 65 55 L 65 80 L 0 80 Z" fill="url(#g)"/><path d="M 45 0 Q 45 20 65 20 Q 45 20 45 40 Q 45 20 25 20 Q 45 20 45 0 Z" fill="#EC4899"/></g><text x="140" y="85" font-family="system-ui" font-size="46" font-weight="800" fill="#111827">LogoShift</text></svg>`;
+    
+    const svgFavicon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4F46E5"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><g transform="translate(27.5, 20)"><path d="M 0 0 L 25 0 L 25 55 L 65 55 L 65 80 L 0 80 Z" fill="url(#g)"/><path d="M 45 0 Q 45 20 65 20 Q 45 20 45 40 Q 45 20 25 20 Q 45 20 45 0 Z" fill="#EC4899"/></g></svg>`;
+
+    document.getElementById('downloadBtn').addEventListener('click', function() {
+      const statusElement = document.getElementById('status');
+      statusElement.textContent = "Generating ZIP file...";
+      
+      const zip = new JSZip();
+      
+      // Inject SVG files into the zip directory
+      zip.file("logoshift-primary.svg", svgPrimary);
+      zip.file("logoshift-horizontal.svg", svgHorizontal);
+      zip.file("logoshift-favicon.svg", svgFavicon);
+      zip.file("deployment-guide.txt", "HEX Codes:\nIndigo: #4F46E5\nPink: #EC4899\nDark: #111827\nFont: system-ui");
+
+      // Generate and download
+      zip.generateAsync({ type: "blob" }).then(function(content) {
+        // Create an invisible link to trigger the browser's download
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(content);
+        link.download = "LogoShift_Assets.zip";
+        document.body.appendChild(link);
+        link.click();
+        
+        // Clean up
+        document.body.removeChild(link);
+        statusElement.textContent = "Download complete!";
+      }).catch(function(error) {
+        statusElement.textContent = "Error generating ZIP: " + error.message;
+        statusElement.style.color = "#EF4444";
+      });
+    });
+  </script>
+</body>
+</html>
