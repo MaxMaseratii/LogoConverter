@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Logo Generator - Convert Image to Logo Package</title>
+  <title>Logo Maker Pro - Convert Image to Logo Package</title>
   <!-- JSZip Library for packaging downloads -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
@@ -138,7 +138,7 @@
   <main>
     <div id="step1">
       <h1>Turn Your Image into a Logo</h1>
-      <p class="subtitle">Upload your graphic. We'll add your brand name and package it into scalable SVG files instantly.</p>
+      <p class="subtitle">Upload your graphic. We'll add your brand name and package it into a massive 7-part scalable SVG package.</p>
 
       <div class="upload-box" id="uploadZone">
         <h3 style="margin-bottom: 10px;">Drag & Drop your image here</h3>
@@ -154,7 +154,7 @@
       <h3>What is your Brand Name?</h3>
       <input type="text" id="brandName" placeholder="e.g. Acme Corp" required>
       <br>
-      <button class="action-btn" id="generateBtn">Generate & Download .ZIP</button>
+      <button class="action-btn" id="generateBtn">Generate 7-Part .ZIP</button>
       <div id="status"></div>
     </div>
   </main>
@@ -210,15 +210,16 @@
       reader.readAsDataURL(file);
     }
 
-    // 3. Generate SVGs and Download ZIP
+    // 3. Generate 7 SVGs and Download ZIP
     document.getElementById('generateBtn').addEventListener('click', function() {
       const brandName = brandNameInput.value.trim() || "MyBrand";
+      const safeName = brandName.replace(/\s+/g, '_');
       const statusElement = document.getElementById('status');
-      statusElement.textContent = "Generating custom logo package...";
+      statusElement.textContent = "Generating your 7 professional assets...";
       
       const zip = new JSZip();
       
-      // Asset 1: Primary Logo (Stacked - Image on top, Text on bottom)
+      // Asset 1: Primary Full Color
       const svgPrimary = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
           <image href="${uploadedImageBase64}" x="125" y="50" width="250" height="250" preserveAspectRatio="xMidYMid meet"/>
@@ -226,7 +227,7 @@
         </svg>
       `;
 
-      // Asset 2: Horizontal Logo (Image on left, Text on right)
+      // Asset 2: Horizontal Full Color
       const svgHorizontal = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200">
           <image href="${uploadedImageBase64}" x="20" y="20" width="160" height="160" preserveAspectRatio="xMidYMid meet"/>
@@ -234,27 +235,82 @@
         </svg>
       `;
 
-      // Asset 3: Favicon / Social Profile (Just the uploaded image, scaled to a square)
-      const svgFavicon = `
+      // Asset 3: Icon Tight
+      const svgIconTight = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-          <image href="${uploadedImageBase64}" x="10" y="10" width="180" height="180" preserveAspectRatio="xMidYMid meet"/>
+          <image href="${uploadedImageBase64}" x="0" y="0" width="200" height="200" preserveAspectRatio="xMidYMid meet"/>
         </svg>
       `;
 
-      // Add generated SVGs to the ZIP
-      zip.file(brandName.replace(/\s+/g, '_') + "_Primary.svg", svgPrimary.trim());
-      zip.file(brandName.replace(/\s+/g, '_') + "_Horizontal.svg", svgHorizontal.trim());
-      zip.file(brandName.replace(/\s+/g, '_') + "_Icon.svg", svgFavicon.trim());
+      // Asset 4: Social Profile (Padded 20%)
+      const svgSocial = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+          <!-- 60px padding on all sides -->
+          <g transform="translate(60, 60)">
+            <image href="${uploadedImageBase64}" x="115" y="50" width="250" height="250" preserveAspectRatio="xMidYMid meet"/>
+            <text x="240" y="380" font-family="system-ui, sans-serif" font-size="52" font-weight="800" fill="#000000" text-anchor="middle">${brandName}</text>
+          </g>
+        </svg>
+      `;
+
+      // Asset 5: Primary Black Utility (Uses SVG Filter to turn image black)
+      const svgBlack = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+          <defs>
+            <filter id="forceBlack">
+              <!-- Matrix that zeroes out RGB and relies entirely on Alpha to draw pure black -->
+              <feColorMatrix type="matrix" values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0   0 0 0 1 0" />
+            </filter>
+          </defs>
+          <image href="${uploadedImageBase64}" x="125" y="50" width="250" height="250" preserveAspectRatio="xMidYMid meet" filter="url(#forceBlack)"/>
+          <text x="250" y="380" font-family="system-ui, sans-serif" font-size="52" font-weight="800" fill="#000000" text-anchor="middle">${brandName}</text>
+        </svg>
+      `;
+
+      // Asset 6: Primary White Utility (Uses SVG Filter to turn image white)
+      const svgWhite = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+          <defs>
+            <filter id="forceWhite">
+              <!-- Matrix that maxes out RGB to draw pure white -->
+              <feColorMatrix type="matrix" values="0 0 0 0 1   0 0 0 0 1   0 0 0 0 1   0 0 0 1 0" />
+            </filter>
+          </defs>
+          <!-- Optional placeholder dark background so the white shows up when opened directly -->
+          <rect width="100%" height="100%" fill="#111827"/>
+          <image href="${uploadedImageBase64}" x="125" y="50" width="250" height="250" preserveAspectRatio="xMidYMid meet" filter="url(#forceWhite)"/>
+          <text x="250" y="380" font-family="system-ui, sans-serif" font-size="52" font-weight="800" fill="#FFFFFF" text-anchor="middle">${brandName}</text>
+        </svg>
+      `;
+
+      // Asset 7: Favicon (Small tight square)
+      const svgFavicon = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <image href="${uploadedImageBase64}" x="0" y="0" width="64" height="64" preserveAspectRatio="xMidYMid meet"/>
+        </svg>
+      `;
+
+      // Add all 7 SVGs to the ZIP
+      zip.file(`1_${safeName}_Primary_FullColor.svg`, svgPrimary.trim());
+      zip.file(`2_${safeName}_Horizontal_FullColor.svg`, svgHorizontal.trim());
+      zip.file(`3_${safeName}_Icon_Tight.svg`, svgIconTight.trim());
+      zip.file(`4_${safeName}_Social_Profile.svg`, svgSocial.trim());
+      zip.file(`5_${safeName}_Primary_Black_Utility.svg`, svgBlack.trim());
+      zip.file(`6_${safeName}_Primary_White_Utility.svg`, svgWhite.trim());
+      zip.file(`7_${safeName}_Favicon.svg`, svgFavicon.trim());
 
       // Download the ZIP
       zip.generateAsync({ type: "blob" }).then(function(content) {
         const link = document.createElement('a');
         link.href = URL.createObjectURL(content);
-        link.download = brandName.replace(/\s+/g, '_') + "_LogoPackage.zip";
+        link.download = `${safeName}_UltimateLogoPackage.zip`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        statusElement.textContent = "Download complete!";
+        statusElement.textContent = "Download complete! Check your downloads folder.";
+      }).catch(function(err) {
+        statusElement.textContent = "Error packaging zip.";
+        console.error(err);
       });
     });
   </script>
